@@ -5,6 +5,23 @@
     <title>Georgian Title Example</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Georgian:wght@700&display=swap" rel="stylesheet">
     <style>
+        body {
+            background-color: white;
+            color: black;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark {
+            background-color: #121212;
+            color: white;
+        }
         .georgian-title {
             font-family: 'Noto Sans Georgian', sans-serif;
             font-weight: bold;
@@ -12,10 +29,276 @@
         .subtitle {
             font-weight: bold;
         }
+        #toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            color: black;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        body.dark #toggle-btn {
+            background-color: #333;
+            color: white;
+        }
+        #toggle-btn.pulse {
+            animation: pulse 0.5s ease-in-out;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        #signup-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            margin-top: 20px;
+        }
+        #modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+        body.dark #modal {
+            background-color: #333;
+            color: white;
+        }
+        #modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        #modal form {
+            display: flex;
+            flex-direction: column;
+        }
+        #modal label {
+            margin-bottom: 5px;
+        }
+        #modal input, #modal textarea {
+            margin-bottom: 10px;
+            padding: 5px;
+        }
+        #submit-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #28a745;
+            color: white;
+            cursor: pointer;
+        }
+        #users-container {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 5px;
+            max-height: 80vh;
+            overflow-y: auto;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #users-container.visible {
+            opacity: 1;
+        }
+        body.dark #users-container {
+            background-color: #333;
+            color: white;
+        }
+        #users-header {
+            font-weight: bold;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+            margin-bottom: 5px;
+        }
+        body.dark #users-header {
+            border-bottom: 1px solid #555;
+        }
+        .user-item {
+            cursor: pointer;
+            padding: 5px;
+            border-bottom: 1px solid #eee;
+        }
+        body.dark .user-item {
+            border-bottom: 1px solid #444;
+        }
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        .user-item.new {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        #description-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+            z-index: 1000;
+        }
+        body.dark #description-modal {
+            background-color: #333;
+            color: white;
+        }
+        #description-modal.show {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        #close-desc-btn {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #dc3545;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-    <h1 class="georgian-title">Sisi hidden cams?!?!?!?!</h1>
-    <h2 class="subtitle">Super ultra skidded</h2>
+    <div id="users-container">
+        <div id="users-header">USERS</div>
+        <div id="users-list"></div>
+    </div>
+    <h1 class="georgian-title">გამარჯობა, სამყარო!</h1>
+    <h2 class="subtitle">hello, world!</h2>
+    <button id="signup-btn">Sign Up</button>
+    <div id="modal">
+        <form id="signup-form">
+            <label for="name">Name:</label>
+            <input type="text" id="name" required>
+            <label for="description">Description (optional):</label>
+            <textarea id="description"></textarea>
+            <button type="button" id="submit-btn">Confirm</button>
+        </form>
+    </div>
+    <div id="description-modal">
+        <p id="desc-text"></p>
+        <button id="close-desc-btn">Close</button>
+    </div>
+    <button id="toggle-btn" onclick="toggleMode()">Toggle Mode</button>
+    <script>
+        const badWords = ['fuck', 'shit', 'asshole', 'bitch', 'nigger', 'cunt']; // Simple list of slurs/bad words
+
+        function containsSlur(text) {
+            const lowerText = text.toLowerCase();
+            return badWords.some(word => lowerText.includes(word));
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle('dark');
+            const btn = document.getElementById('toggle-btn');
+            if (document.body.classList.contains('dark')) {
+                btn.style.backgroundColor = '#333';
+                btn.style.color = 'white';
+            } else {
+                btn.style.backgroundColor = '#f0f0f0';
+                btn.style.color = 'black';
+            }
+            btn.classList.add('pulse');
+            setTimeout(() => {
+                btn.classList.remove('pulse');
+            }, 500);
+        }
+
+        const signupBtn = document.getElementById('signup-btn');
+        const modal = document.getElementById('modal');
+        const submitBtn = document.getElementById('submit-btn');
+        const nameInput = document.getElementById('name');
+        const descInput = document.getElementById('description');
+        const usersContainer = document.getElementById('users-container');
+        const usersList = document.getElementById('users-list');
+        const descModal = document.getElementById('description-modal');
+        const descText = document.getElementById('desc-text');
+        const closeDescBtn = document.getElementById('close-desc-btn');
+
+        signupBtn.addEventListener('click', () => {
+            modal.classList.add('show');
+        });
+
+        submitBtn.addEventListener('click', () => {
+            const name = nameInput.value.trim();
+            const desc = descInput.value.trim();
+
+            if (!name) {
+                alert('Name is required.');
+                return;
+            }
+
+            if (containsSlur(name) || containsSlur(desc)) {
+                alert('Input contains inappropriate language. Please remove slurs.');
+                return;
+            }
+
+            const userItem = document.createElement('div');
+            userItem.classList.add('user-item');
+            userItem.textContent = name;
+            userItem.dataset.description = desc;
+            userItem.addEventListener('click', () => {
+                descText.textContent = userItem.dataset.description || 'No description provided.';
+                descModal.classList.add('show');
+            });
+            usersList.appendChild(userItem);
+            userItem.classList.add('new');
+            setTimeout(() => {
+                userItem.classList.remove('new');
+            }, 500);
+
+            if (!usersContainer.classList.contains('visible')) {
+                usersContainer.style.display = 'block';
+                setTimeout(() => {
+                    usersContainer.classList.add('visible');
+                }, 10);
+            }
+
+            modal.classList.remove('show');
+            nameInput.value = '';
+            descInput.value = '';
+        });
+
+        closeDescBtn.addEventListener('click', () => {
+            descModal.classList.remove('show');
+        });
+
+        // Close modals on outside click
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.classList.remove('show');
+            }
+            if (event.target === descModal) {
+                descModal.classList.remove('show');
+            }
+        });
+    </script>
 </body>
 </html>
